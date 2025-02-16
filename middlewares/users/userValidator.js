@@ -1,6 +1,6 @@
 const { check, validationResult } = require("express-validator");
 const createError = require("http-errors");
-const User = require("../../model/People");
+const User = require("../../models/People");
 const { unlink } = require("fs");
 const addUserValidators = [
   check("name")

@@ -8,8 +8,11 @@ const {
   removeUser,
   getSingelUser,
 } = require("../controller/userController");
+
 const decorateHtmlResponse = require("../middlewares/common/decorateHtml");
 const avatarUpload = require("../middlewares/users/avatarUpload");
+
+const { checkLogin } = require("../middlewares/common/checkLogin");
 
 const {
   addUserValidators,
@@ -17,7 +20,7 @@ const {
 } = require("../middlewares/users/userValidator");
 
 //user page
-router.get("/", decorateHtmlResponse("Users"), getUsers);
+router.get("/", decorateHtmlResponse("Users"), checkLogin, getUsers);
 // add user
 router.post(
   "/",

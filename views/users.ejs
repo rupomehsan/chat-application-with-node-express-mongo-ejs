@@ -77,7 +77,6 @@
     </div>
     <script>
       const modal = document.querySelector("#add-user-modal");
-
       const form = document.querySelector("#add-user-form");
 
       const successToast = Toastify({
@@ -104,6 +103,11 @@
       }
       function openModal() {
         modal.style.display = "block";
+         const errorsPlaceholder = form.querySelectorAll(".error");
+        errorsPlaceholder.forEach((element) => {
+          element.textContent = "";
+          element.classList.remove("show");
+        });
       }
       form.onsubmit = async function (e) {
         e.preventDefault();

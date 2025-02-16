@@ -1,12 +1,33 @@
+// external imports
 const express = require("express");
+
+// internal imports
+const { getLogin, login, logout } = require("../controller/loginController");
+const decorateHtmlResponse = require("../middlewares/common/decorateHtml");
+const {
+  doLoginValidators,
+  doLoginValidationHandler,
+} = require("../middlewares/login/loginValidators");
+const { redirectLoggedIn } = require("../middlewares/common/checkLogin");
 
 const router = express.Router();
 
-const { getLoginPage } = require("../controller/loginController");
+// set page title
+const page_title = "Login";
 
-const decorateHtmlResponse = require("../middlewares/common/decorateHtml");
+// login page
+router.get("/", decorateHtmlResponse(page_title), redirectLoggedIn, getLogin);
 
-//login page
-router.get("/", decorateHtmlResponse("Login"), getLoginPage);
+// process login
+router.post(
+  "/",
+  decorateHtmlResponse(page_title),
+  doLoginValidators,
+  doLoginValidationHandler,
+  login
+);
+
+// logout
+router.delete("/", logout);
 
 module.exports = router;
