@@ -1,6 +1,5 @@
 // external imports
 const createError = require("http-errors");
-const moment = require("moment");
 // internal imports
 const User = require("../models/People");
 const Conversation = require("../models/Conversation");
@@ -16,7 +15,6 @@ async function getInbox(req, res, next) {
         { "participant.id": req.user.userid },
       ],
     });
-    console.log("Conversations:", conversations);
     res.locals.data = conversations;
     res.render("inbox");
   } catch (err) {
@@ -70,17 +68,6 @@ async function searchUser(req, res, next) {
 // add conversation
 async function addConversation(req, res, next) {
   try {
-    const existingConversation = await Conversation.findOne({
-      $or: [
-        { "creator.id": req.user.userid, "participant.id": req.body.id },
-        { "creator.id": req.body.id, "participant.id": req.user.userid },
-      ],
-    });
-
-    if (existingConversation) {
-      throw createError("Conversation already exists!");
-    }
-
     const newConversation = new Conversation({
       creator: {
         id: req.user.userid,

@@ -3,7 +3,7 @@ const express = require("express");
 
 // internal imports
 const { getLogin, login, logout } = require("../controller/loginController");
-const decorateHtmlResponse = require("../middlewares/common/decorateHtml");
+const decorateHtmlResponse = require("../middlewares/common/decorateHtmlResponse");
 const {
   doLoginValidators,
   doLoginValidationHandler,

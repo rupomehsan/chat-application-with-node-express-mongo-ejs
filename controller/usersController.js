@@ -1,8 +1,13 @@
+// external imports
 const bcrypt = require("bcrypt");
+const { unlink } = require("fs");
+const path = require("path");
 
+// internal imports
 const User = require("../models/People");
 
-async function getUsers(req, res) {
+// get users page
+async function getUsers(req, res, next) {
   try {
     const users = await User.find();
     res.render("users", {
@@ -13,6 +18,7 @@ async function getUsers(req, res) {
   }
 }
 
+// add user
 async function addUser(req, res, next) {
   let newUser;
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -41,7 +47,6 @@ async function addUser(req, res, next) {
       errors: {
         common: {
           msg: "Unknown error occured!",
-          err: err,
         },
       },
     });
@@ -79,31 +84,8 @@ async function removeUser(req, res, next) {
   }
 }
 
-// get single user
-async function getSingelUser(req, res, next) {
-  try {
-    const user = await User.findOne({
-      _id: req.params.id,
-    });
-
-    res.status(200).json({
-      user: user,
-    });
-  } catch (err) {
-    res.status(500).json({
-      errors: {
-        common: {
-          msg: "Unknown error occured!",
-          err: err,
-        },
-      },
-    });
-  }
-}
-
 module.exports = {
   getUsers,
   addUser,
   removeUser,
-  getSingelUser,
 };

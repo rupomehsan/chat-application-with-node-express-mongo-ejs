@@ -1,7 +1,7 @@
+// external imports
 const express = require("express");
 
-const router = express.Router();
-
+// internal imports
 const {
   getInbox,
   searchUser,
@@ -9,14 +9,18 @@ const {
   getMessages,
   sendMessage,
 } = require("../controller/inboxController");
-const decorateHtmlResponse = require("../middlewares/common/decorateHtml");
+const decorateHtmlResponse = require("../middlewares/common/decorateHtmlResponse");
+const { checkLogin } = require("../middlewares/common/checkLogin");
 const attachmentUpload = require("../middlewares/inbox/attachmentUpload");
 
-const { checkLogin } = require("../middlewares/common/checkLogin");
-//inbox page
+const router = express.Router();
+
+// inbox page
 router.get("/", decorateHtmlResponse("Inbox"), checkLogin, getInbox);
+
 // search user for conversation
 router.post("/search", checkLogin, searchUser);
+
 // add conversation
 router.post("/conversation", checkLogin, addConversation);
 

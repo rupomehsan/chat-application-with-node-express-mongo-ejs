@@ -15,7 +15,6 @@ function avatarUpload(req, res, next) {
         errors: {
           avatar: {
             msg: err.message,
-            err: err,
           },
         },
       });
