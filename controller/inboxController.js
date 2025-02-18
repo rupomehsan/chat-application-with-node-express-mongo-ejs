@@ -68,6 +68,23 @@ async function searchUser(req, res, next) {
 // add conversation
 async function addConversation(req, res, next) {
   try {
+    isConversationExists = await Conversation.findOne({
+      $or: [
+        {
+          "creator.id": req.user.userid,
+          "participant.id": req.body.id,
+        },
+        {
+          "creator.id": req.body.id,
+          "participant.id": req.user.userid,
+        },
+      ],
+    });
+
+    if (isConversationExists) {
+      throw createError("Conversation already exists!");
+    }
+
     const newConversation = new Conversation({
       creator: {
         id: req.user.userid,
