@@ -19,7 +19,7 @@ const checkLogin = (req, res, next) => {
       next();
     } catch (err) {
       if (res.locals.html) {
-        res.redirect("/");
+        res.redirect("/login");
       } else {
         res.status(500).json({
           errors: {
@@ -32,7 +32,7 @@ const checkLogin = (req, res, next) => {
     }
   } else {
     if (res.locals.html) {
-      res.redirect("/");
+      res.redirect("/login");
     } else {
       res.status(401).json({
         error: "Authetication failure!",
@@ -49,7 +49,7 @@ const redirectLoggedIn = function (req, res, next) {
   if (!cookies) {
     next();
   } else {
-    res.redirect("/inbox");
+    res.redirect("/");
   }
 };
 

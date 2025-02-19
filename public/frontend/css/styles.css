@@ -1,0 +1,164 @@
+/* General Styles */
+::-webkit-scrollbar {
+  display: none;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+header {
+  background-color: #4267b2;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header .logo h1 {
+  margin: 0;
+}
+
+header nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+header nav ul li {
+  margin-left: 20px;
+}
+
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+header .search-bar input {
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+}
+
+main {
+  display: flex;
+  padding: 20px;
+}
+
+.sidebar {
+  width: 25%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-right: 20px;
+}
+
+.sidebar .user-profile {
+  text-align: center;
+}
+
+.sidebar .user-profile img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.sidebar .sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar .sidebar-menu li {
+  margin: 15px 0;
+}
+
+.sidebar .sidebar-menu li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.feed {
+  width: 50%;
+}
+
+.feed .post {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.feed .post .post-header {
+  display: flex;
+  align-items: center;
+}
+
+.feed .post .post-header img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.feed .post .post-actions button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4267b2;
+  color: white;
+  cursor: pointer;
+}
+
+.right-sidebar {
+  width: 25%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-left: 20px;
+}
+
+.right-sidebar .news,
+.right-sidebar .ads {
+  margin-bottom: 20px;
+}
+
+footer {
+  background-color: #4267b2;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+.chat-icon {
+  width: 50px;
+  height: 50px;
+  background-color: #0084ff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #043c77bd;
+}
+
+.chat-icon:hover {
+  background-color: #005bbd;
+}
+.fa-brands {
+  background-color: #254f7d;
+  box-shadow: 0 1px 15px rgba(12, 11, 11, 1);
+  border-radius: 5px;
+}

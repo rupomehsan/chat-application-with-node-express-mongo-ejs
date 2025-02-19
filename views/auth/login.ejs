@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Sumit Saha" />
+    <meta name="owner" content="learnwithsumit.com" />
+    <title><%= title %></title>
+    <!-- <link rel="shortcut icon" href="./images/favicon.png" /> -->
+
+    <link rel="stylesheet" href="./stylesheets/toastify.css" />
+    <link rel="stylesheet" href="./stylesheets/style.css" />
+    <script src="./js/toastify.js"></script>
+    <script src="./js/moment.js"></script>
+  </head>
+  <body>
+    
+
+<div id="login-container">
+       <div id="left-column"></div>
+       <div class="row align-items-start justify-content-center h-100 p-5 my-5 ">
+        <div class="col-md-5 ">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="text-white text-center">Signin</h2>
+            </div>
+         
+            <div class="card-body">
+               <div id="login-form">
+                  <form id="signinForm" method="post" >
+                    <div>
+                      <input
+                      type="email"
+                      name="email"
+                      placeholder="enter mobile or email"
+                      value=""
+                    />
+                    </div>
+
+                    <div>
+                      <input type="password" name="password" placeholder="enter password" />
+
+                    </div>
+                   
+                    <input type="submit" value="Signin" />
+                  </form>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="text-white text-center">Signup</h2>
+            </div>
+            <div class="card-body">
+              <div id="login-form">
+                <form id="signupForm" method="post"  enctype="multipart/form-data">
+                  <div>
+                    <input type="text" name="name" placeholder="Enter mobile or email" />
+                  </div>
+
+                  <div>
+                    <input type="email" name="email" placeholder="Enter email" />
+                  </div>
+
+                  <div>
+                    <input type="password" name="password" placeholder="Enter password" />
+                  </div>
+
+                  <div>
+                    <input type="number" name="mobile" placeholder="Enter mobile number" value="" />
+                  </div>
+
+                  <div>
+                    <input type="file" name="avatar" />
+                  </div>
+
+                  <input  type="submit">Sign In</button>
+                </form>
+
+              </div>
+            </div>
+          </div>    
+        </div>    
+      </div>
+    </div>
+
+   <script>
+
+      document.getElementById("signinForm").onsubmit = handleFormSubmit(document.getElementById("signinForm"), "/signin");
+      document.getElementById("signupForm").onsubmit = handleFormSubmit(document.getElementById("signupForm"), "/signup");
+
+      function handleFormSubmit(form, url) {
+          return async function (event) {
+              event.preventDefault();
+
+              // 🔹 Clear errors only for the specific form
+              form.querySelectorAll(".error-message").forEach((el) => el.remove());
+              form.querySelectorAll("input, textarea").forEach((field) => {
+                  field.style.border = ""; // Reset border color
+              });
+
+              // 🔹 Convert FormData to JSON
+              const formData = new FormData(form);
+              let response = await fetch(url, {
+                  method: "POST",
+                  body: formData,
+              });
+
+              let result = await response.json();
+
+              if (result.errors) {
+                  Object.keys(result.errors).forEach((key) => {
+                      let errorData = result.errors[key]; // Access error object
+                      let errorMsg = errorData.msg; // Extract error message
+                      let field = form.querySelector(`input[name="${key}"], textarea[name="${key}"]`);
+
+                      if (!field) {
+                          field = form.querySelector(`#${key}`);
+                      }
+
+                      if (field) {
+                          // 🔹 Display error message
+                          let errorSpan = document.createElement("span");
+                          errorSpan.className = "error-message";
+                          errorSpan.style.color = "red";
+                          errorSpan.innerText = errorMsg;
+
+                          // Remove old error message if exists
+                          let existingError = field.nextElementSibling;
+                          if (existingError && existingError.classList.contains("error-message")) {
+                              existingError.remove();
+                          }
+
+                          field.insertAdjacentElement("afterend", errorSpan);
+                          field.style.border = "1px solid red"; // Add error styling
+                      }
+                  });
+              } else {
+                  if(result.status == "success"){
+                    const successToast = Toastify({
+                        text: result.message,
+                        duration: 3000,
+                    });
+                    successToast.showToast();
+                    setTimeout(() => {
+                       window.location.href = "/";
+                    }, 1000);
+                  } 
+              }
+          };
+      }
+
+      // Attach event listeners separately for each form
+  
+
+ 
+ </script>
+
+  </body>
+</html>

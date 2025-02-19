@@ -70,6 +70,7 @@ input {
   color: #fff;
   border-radius: 6px;
   font-size: 1.4rem;
+  width: 100%;
 }
 
 input.error {
@@ -279,8 +280,6 @@ input[type="submit"]:active {
     "conversation-list chat-message-list" 1fr
     "new-message-container chat-form" 78px
     /275px 1fr;
-  min-width: 800px;
-  max-width: 1000px;
   width: 100%;
   height: calc(100vh - 70px);
   background: var(--primary);
@@ -380,8 +379,10 @@ input[type="submit"]:active {
 
 .new-message-container {
   display: grid;
-  grid: 40px / 40px;
+  grid-template-columns: repeat(2, 40px); /* Two columns, each 40px wide */
+  gap: 10px; /* Space between the buttons */
   align-content: center;
+  justify-content: space-between; /* Align buttons to the start (left) */
   grid-area: new-message-container;
   border-top: 2px solid var(--dark);
   border-radius: 0 0 0 10px;
@@ -389,13 +390,18 @@ input[type="submit"]:active {
 }
 
 .new-message-container a {
-  display: grid;
-  place-content: center center;
-  background: #eee;
-  border-radius: 100%;
-  color: var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  color: #000000;
   text-decoration: none;
-  font-size: 3.6rem;
+  border-radius: 50%;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+  font-weight: bolder;
 }
 
 .new-message-container a:hover {
@@ -429,15 +435,24 @@ input[type="submit"]:active {
 #chat-title > img:hover {
   transform: scale(1.05);
 }
-
 #chat-message-list {
   grid-area: chat-message-list;
   display: flex;
   flex-direction: column-reverse;
   padding: 0 20px;
   overflow-y: scroll;
+  background-image: url("../images/chat-bg.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed; /* Fix the background image */
+  position: relative; /* Required for the pseudo-element */
 }
 
+#chat-message-list > * {
+  position: relative; /* Ensure text and content stay above the blur effect */
+  z-index: 2;
+}
 .message-row {
   display: grid;
   /* grid-template-columns: 70%; */
@@ -502,12 +517,10 @@ input[type="submit"]:active {
 }
 
 #chat-form {
-  display: grid;
-  grid: 51px / 32px 1fr;
-  align-content: center;
+  display: flex;
   align-items: center;
-  grid-gap: 15px;
-  grid-area: chat-form;
+  justify-content: center;
+  gap: 15px;
   border-radius: 0 0 10px 0;
   border-top: 2px solid rgba(0, 0, 0, 0.25);
   padding-left: 10px;

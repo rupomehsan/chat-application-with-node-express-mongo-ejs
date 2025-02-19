@@ -8,7 +8,7 @@ const User = require("../models/People");
 
 // get login page
 function getLogin(req, res, next) {
-  res.render("index");
+  res.render("auth/login");
 }
 
 // do login
@@ -70,6 +70,63 @@ async function login(req, res, next) {
     });
   }
 }
+async function register(req, res, next) {
+  let newUser;
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+  if (req.files && req.files.length > 0) {
+    newUser = new User({
+      ...req.body,
+      avatar: req.files[0].filename,
+      password: hashedPassword,
+    });
+  } else {
+    newUser = new User({
+      ...req.body,
+      password: hashedPassword,
+    });
+  }
+
+  // save user or send error
+  try {
+    const user = await newUser.save();
+    console.log("user", user);
+
+    const userObject = {
+      userid: user._id,
+      username: user.name,
+      email: user.email,
+      avatar: user.avatar || null,
+      role: user.role || "user",
+    };
+
+    // generate token
+    const token = jwt.sign(userObject, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRY,
+    });
+
+    // set cookie
+    res.cookie(process.env.COOKIE_NAME, token, {
+      maxAge: process.env.JWT_EXPIRY,
+      httpOnly: true,
+      signed: true,
+    });
+    res.status(200).json({
+      status: "success",
+      message: "Your are successfully registered, automatically logged in!",
+    });
+  } catch (err) {
+    console.log("custom err", err);
+
+    res.status(500).json({
+      errors: {
+        common: {
+          msg: "Unknown error occured!",
+        },
+      },
+    });
+  }
+}
 
 // do logout
 function logout(req, res) {
@@ -80,5 +137,6 @@ function logout(req, res) {
 module.exports = {
   getLogin,
   login,
+  register,
   logout,
 };

@@ -6,9 +6,11 @@ const mongoose = require("mongoose");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const moment = require("moment");
-
+const multer = require("multer");
+const upload = multer();
 // internal imports
 const loginRouter = require("./router/loginRouter");
+const homeRouter = require("./router/homeRouter");
 const usersRouter = require("./router/usersRouter");
 const inboxRouter = require("./router/inboxRouter");
 
@@ -40,6 +42,7 @@ mongoose
 
 // request parsers
 app.use(express.json());
+// app.use(upload.any());
 app.use(express.urlencoded({ extended: true }));
 
 // set view engine
@@ -52,7 +55,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // routing setup
-app.use("/", loginRouter);
+app.use(loginRouter);
+app.use("/", homeRouter);
 app.use("/users", usersRouter);
 app.use("/inbox", inboxRouter);
 

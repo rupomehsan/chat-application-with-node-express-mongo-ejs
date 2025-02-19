@@ -15,8 +15,9 @@ async function getInbox(req, res, next) {
         { "participant.id": req.user.userid },
       ],
     });
+
     res.locals.data = conversations;
-    res.render("inbox");
+    res.render("pages/inbox");
   } catch (err) {
     next(err);
   }
@@ -145,69 +146,82 @@ async function getMessages(req, res, next) {
 
 // send new message
 async function sendMessage(req, res, next) {
-  if (req.body.message || (req.files && req.files.length > 0)) {
-    try {
-      // save message text/attachment in database
-      let attachments = null;
+  try {
+    console.log("Headers:", req.headers);
+    console.log("Request Body:", req.body);
+    console.log("Files:", req.files);
 
-      if (req.files && req.files.length > 0) {
-        attachments = [];
+    if (req.body.message || (req.files && req.files.length > 0)) {
+      try {
+        // save message text/attachment in database
+        let attachments = null;
 
-        req.files.forEach((file) => {
-          attachments.push(file.filename);
-        });
-      }
+        if (req.files && req.files.length > 0) {
+          attachments = req.files.map((file) => file.filename);
+        }
 
-      const newMessage = new Message({
-        text: req.body.message,
-        attachment: attachments,
-        sender: {
-          id: req.user.userid,
-          name: req.user.username,
-          avatar: req.user.avatar || null,
-        },
-        receiver: {
-          id: req.body.receiverId,
-          name: req.body.receiverName,
-          avatar: req.body.avatar || null,
-        },
-        conversation_id: req.body.conversationId,
-      });
-
-      const result = await newMessage.save();
-
-      // emit socket event
-      global.io.emit("new_message", {
-        message: {
-          conversation_id: req.body.conversationId,
+        const newMessage = new Message({
+          text: req.body.message,
+          attachment: attachments,
           sender: {
             id: req.user.userid,
             name: req.user.username,
             avatar: req.user.avatar || null,
           },
-          message: req.body.message,
-          attachment: attachments,
-          date_time: result.date_time,
-        },
-      });
-
-      res.status(200).json({
-        message: "Successful!",
-        data: result,
-      });
-    } catch (err) {
-      res.status(500).json({
-        errors: {
-          common: {
-            msg: err.message,
+          receiver: {
+            id: req.body.receiverId,
+            name: req.body.receiverName,
+            avatar: req.body.avatar || null,
           },
+          conversation_id: req.body.conversationId,
+        });
+
+        const result = await newMessage.save();
+
+        // emit socket event
+        global.io.emit("new_message", {
+          message: {
+            conversation_id: req.body.conversationId,
+            sender: {
+              id: req.user.userid,
+              name: req.user.username,
+              avatar: req.user.avatar || null,
+            },
+            message: req.body.message,
+            attachment: attachments,
+            date_time: result.date_time,
+          },
+        });
+
+        return res.status(200).json({
+          message: "Successful!",
+          data: result,
+        });
+      } catch (err) {
+        console.error("Error saving message:", err);
+        return res.status(500).json({
+          errors: {
+            common: {
+              msg: err.message,
+            },
+          },
+        });
+      }
+    } else {
+      console.warn("Message text or attachment is missing!");
+      return res.status(400).json({
+        errors: {
+          common: "Message text or attachment is required!",
         },
       });
     }
-  } else {
-    res.status(500).json({
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return res.status(500).json({
       errors: {
-        common: "message text or attachment is required!",
+        common: {
+          msg: err.message,
+        },
       },
     });
   }
