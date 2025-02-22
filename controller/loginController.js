@@ -2,7 +2,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const createError = require("http-errors");
-
+const imageUploader = require("../utilities/Imageuploader");
 // internal imports
 const User = require("../models/People");
 
@@ -14,9 +14,9 @@ function getLogin(req, res, next) {
 // do login
 async function login(req, res, next) {
   try {
-    // find a user who has this email/username
+    // find a user who has this email/name
     const user = await User.findOne({
-      $or: [{ email: req.body.username }, { mobile: req.body.username }],
+      $or: [{ email: req.body.email }, { mobile: req.body.mobile }],
     });
 
     if (user && user._id) {
@@ -29,7 +29,7 @@ async function login(req, res, next) {
         // prepare the user object to generate token
         const userObject = {
           userid: user._id,
-          username: user.name,
+          name: user.name,
           email: user.email,
           avatar: user.avatar || null,
           role: user.role || "user",
@@ -50,7 +50,10 @@ async function login(req, res, next) {
         // set logged in user local identifier
         res.locals.loggedInUser = userObject;
 
-        res.redirect("inbox");
+        res.status(200).json({
+          status: "success",
+          message: "Your are logged in!",
+        });
       } else {
         throw createError("Login failed! Please try again.");
       }
@@ -58,26 +61,29 @@ async function login(req, res, next) {
       throw createError("Login failed! Please try again.");
     }
   } catch (err) {
-    res.render("index", {
-      data: {
-        username: req.body.username,
-      },
+    console.log("custom err", err);
+
+    res.status(500).json({
       errors: {
         common: {
-          msg: err.message,
+          msg: "Unknown error occured!",
         },
       },
     });
   }
 }
 async function register(req, res, next) {
+  // console.log("aa", req);
+
   let newUser;
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-  if (req.files && req.files.length > 0) {
+  if (req.files) {
+    const path = await imageUploader(req.files.avatar, "avatars");
+
     newUser = new User({
       ...req.body,
-      avatar: req.files[0].filename,
+      avatar: path,
       password: hashedPassword,
     });
   } else {
@@ -87,6 +93,8 @@ async function register(req, res, next) {
     });
   }
 
+  console.log("newUser", newUser);
+
   // save user or send error
   try {
     const user = await newUser.save();
@@ -94,7 +102,7 @@ async function register(req, res, next) {
 
     const userObject = {
       userid: user._id,
-      username: user.name,
+      name: user.name,
       email: user.email,
       avatar: user.avatar || null,
       role: user.role || "user",

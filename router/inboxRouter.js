@@ -8,10 +8,11 @@ const {
   addConversation,
   getMessages,
   sendMessage,
+  deleteMessages,
 } = require("../controller/inboxController");
 const decorateHtmlResponse = require("../middlewares/common/decorateHtmlResponse");
 const { checkLogin } = require("../middlewares/common/checkLogin");
-const attachmentUpload = require("../middlewares/inbox/attachmentUpload");
+// const attachmentUpload = require("../middlewares/inbox/attachmentUpload");
 
 const router = express.Router();
 
@@ -28,6 +29,7 @@ router.post("/conversation", checkLogin, addConversation);
 router.get("/messages/:conversation_id", checkLogin, getMessages);
 
 // send message
-router.post("/message", checkLogin, attachmentUpload, sendMessage);
+router.post("/message", checkLogin, sendMessage);
+router.delete("/delete/:conversationId", checkLogin, deleteMessages);
 
 module.exports = router;

@@ -8,7 +8,10 @@
     <meta name="owner" content="learnwithsumit.com" />
     <title><%= title %></title>
     <!-- <link rel="shortcut icon" href="./images/favicon.png" /> -->
-
+<link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./stylesheets/toastify.css" />
     <link rel="stylesheet" href="./stylesheets/style.css" />
     <script src="./js/toastify.js"></script>
@@ -16,8 +19,7 @@
   </head>
   <body>
     
-
-<div id="login-container">
+    <div id="login-container">
        <div id="left-column"></div>
        <div class="row align-items-start justify-content-center h-100 p-5 my-5 ">
         <div class="col-md-5 ">
@@ -74,7 +76,7 @@
                   </div>
 
                   <div>
-                    <input type="file" name="avatar" />
+                    <input type="file" name="avatar" accept="image/*" />
                   </div>
 
                   <input  type="submit">Sign In</button>
@@ -157,7 +159,7 @@
   
 
  
- </script>
+   </script>
 
   </body>
 </html>

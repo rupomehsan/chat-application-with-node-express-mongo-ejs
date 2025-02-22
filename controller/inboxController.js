@@ -5,7 +5,7 @@ const User = require("../models/People");
 const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
 const escape = require("../utilities/escape");
-
+const imageUploader = require("../utilities/Imageuploader");
 // get inbox page
 async function getInbox(req, res, next) {
   try {
@@ -89,7 +89,7 @@ async function addConversation(req, res, next) {
     const newConversation = new Conversation({
       creator: {
         id: req.user.userid,
-        name: req.user.username,
+        name: req.user.name,
         avatar: req.user.avatar || null,
       },
       participant: {
@@ -147,25 +147,30 @@ async function getMessages(req, res, next) {
 // send new message
 async function sendMessage(req, res, next) {
   try {
-    console.log("Headers:", req.headers);
-    console.log("Request Body:", req.body);
-    console.log("Files:", req.files);
-
-    if (req.body.message || (req.files && req.files.length > 0)) {
+    if (req.body.message || req.files || req.files?.attachment?.length > 0) {
       try {
         // save message text/attachment in database
         let attachments = null;
+        // console.log("dd", req.files.attachment);
 
-        if (req.files && req.files.length > 0) {
-          attachments = req.files.map((file) => file.filename);
+        if (req.files?.attachment) {
+          if (Array.isArray(req.files.attachment)) {
+            const validFiles = req.files.attachment.filter(
+              (file) => file.size > 0
+            );
+            if (validFiles.length > 0) {
+              attachments = await imageUploader(validFiles, "messages", true);
+            }
+          } else if (req.files.attachment.size > 0) {
+            attachments = await imageUploader(req.files.attachment, "messages");
+          }
         }
-
         const newMessage = new Message({
           text: req.body.message,
           attachment: attachments,
           sender: {
             id: req.user.userid,
-            name: req.user.username,
+            name: req.user.name,
             avatar: req.user.avatar || null,
           },
           receiver: {
@@ -184,7 +189,7 @@ async function sendMessage(req, res, next) {
             conversation_id: req.body.conversationId,
             sender: {
               id: req.user.userid,
-              name: req.user.username,
+              name: req.user.name,
               avatar: req.user.avatar || null,
             },
             message: req.body.message,
@@ -227,10 +232,33 @@ async function sendMessage(req, res, next) {
   }
 }
 
+async function deleteMessages(req, res, next) {
+  try {
+    const { conversationId } = req.params;
+    const conversation = await Conversation.findOne({
+      _id: conversationId,
+    });
+
+    if (!conversation) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Conversation not found" });
+    }
+    await Conversation.deleteOne({ _id: conversationId });
+    res.status(200).json({
+      success: "success",
+      message: "Conversation deleted successfully.",
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   getInbox,
   searchUser,
   addConversation,
   getMessages,
   sendMessage,
+  deleteMessages,
 };

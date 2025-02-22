@@ -93,6 +93,22 @@ main {
   margin-bottom: 20px;
 }
 
+.right-sidebar .post {
+  display: flex;
+  align-items: center;
+}
+.right-sidebar .post-header {
+  display: flex;
+  align-items: center;
+}
+
+.right-sidebar .post img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
 .feed .post .post-header {
   display: flex;
   align-items: center;
@@ -161,4 +177,51 @@ footer {
   background-color: #254f7d;
   box-shadow: 0 1px 15px rgba(12, 11, 11, 1);
   border-radius: 5px;
+}
+
+.post-box {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgb(66 103 178);
+  padding: 15px;
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+}
+.post-box .input-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profile-pic img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.input-field {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: #f3f2ef;
+  outline: none;
+}
+.actions {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 10px;
+}
+.action {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+}
+.action img {
+  width: 20px;
+  height: 20px;
 }

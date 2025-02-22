@@ -10,9 +10,9 @@
           <% if(conversation.creator.id == loggedInUser.userid) { %>
             <div class="conversation" onclick="getMessages('<%= conversation._id %>', '<%= conversation.participant.name %>')">
               <% if (conversation.participant.avatar) { %>
-              <img src="./uploads/avatars/<%= conversation.participant.avatar %>" alt="<%= conversation.participant.name %>" />
+              <img src="<%= conversation.participant.avatar %>" alt="<%= conversation.participant.name %>" />
               <% } else { %>
-                <img src="./images/nophoto.png" />
+                <img src="https://placehold.co/200x200?text=<%= conversation.participant.name %>" />
               <% } %>
               <div class="title-text"><%= conversation.participant.name %></div>
               <div class="conversation-date"><%= moment(conversation.last_updated).fromNow() %></div>
@@ -20,9 +20,9 @@
           <% } else { %>
             <div class="conversation" onclick="getMessages('<%= conversation._id %>', '<%= conversation.creator.name %>')">
               <% if (conversation.creator.avatar) { %>
-              <img src="./uploads/avatars/<%= conversation.creator.avatar %>" alt="<%= conversation.creator.name %>" />
+              <img src="<%= conversation.creator.avatar %>" alt="<%= conversation.creator.name %>" />
               <% } else { %>
-                <img src="./images/nophoto.png" />
+                <img src="<%= conversation.participant.name %>" />
               <% } %>
               <div class="title-text"><%= conversation.creator.name %></div>
               <div class="conversation-date"><%= moment(conversation.last_updated).fromNow() %></div>
@@ -43,9 +43,9 @@
     </div>
       
 
-      <div id="chat-title">
+      <div id="chat-title"  class="d-none">
         <span id="conversation-partner"></span>
-        <img src="./images/trash.png" alt="Delete Conversation" />
+        <img src="./images/trash.png" alt="Delete Conversation" onclick="deleteConversation()" />
       </div>
 
       <!-- placeholder div if no messages are in messages area -->
@@ -73,7 +73,7 @@
       const messageContainer = document.querySelector('#chat-message-list');
       const chatTitleContainer = document.querySelector('#conversation-partner');
       const loggedinUserId = '<%= loggedInUser.userid %>';
-      const loggedinUserName = '<%= loggedInUser.username %>';
+      const loggedinname = '<%= loggedInUser.name %>';
       let participant = null; // selected conversation participant object
       let current_conversation_id; // selected conversation id
 
@@ -86,33 +86,38 @@
         if(data.message.conversation_id == current_conversation_id) {
           // message class
           const messageClass = data.message.sender.id === loggedinUserId ? 'you-message' : 'other-message';
-          
-          const senderAvatar = data.message.sender.avatar ? `<img src="./uploads/avatars/${data.message.sender.avatar}" alt="${data.message.sender.name}" />` : `<img src="./images/nophoto.png" alt="${data.message.sender.name}" />`;
-
+          const senderAvatar = data.message.sender.avatar ? `<img src="${data.message.sender.avatar}" alt="${data.message.sender.name}" />` : `<img class="message-avatar" src="https://placehold.co/200x200?text=${data.message.sender.name}" alt="${data.message.sender.name}" />`;
           // message attachments
-          let attachments = '<div class="attachments">';
-
-          if(data.message.attachment && data.message.attachment.length > 0) {
-            data.message.attachment.forEach(attachment => {
-              attachments += `<img src="./uploads/attachments/${attachment}" /> `;
-            });
+         let attachments = '<div class="attachments">';
+          const { attachment, id } = data.message || {};
+          // If attachment exists
+          if (attachment) {
+              if (Array.isArray(attachment)) {
+                  attachments += attachment.map((att, index) => 
+                      `<a href="./${att}" data-lightbox="message-${id}" data-title="Attachment ${index + 1}">
+                          <img src="./${att}" alt="Attachment ${index + 1}" />
+                      </a>`
+                  ).join('');
+              } else {
+                  attachments += `<a href="./${attachment}" data-lightbox="message-${id}" data-title="Attachment">
+                                      <img src="./${attachment}" alt="Attachment" />
+                                  </a>`;
+              }
           }
-
           attachments += '</div>';
-
           let messageHTML;
-
           // do not show avatar for loggedin user
+          const messageText = data.message.message ? `<div class="message-text">${data.message.message}</div>` : "";
           if(data.message.sender.id == loggedinUserId) {
             messageHTML = `<div class="message-row ${messageClass}"><div class="message-content">
-              <div class="message-text">${data.message.message}</div>
+              ${messageText}
               ${attachments}
               <div class="message-time">${moment(data.message.date_time).fromNow()}</div>
             </div></div>`;
           } else {
             messageHTML = `<div class="message-row ${messageClass}"><div class="message-content">
               ${senderAvatar}
-              <div class="message-text">${data.message.message}</div>
+              ${messageText}
               ${attachments}
               <div class="message-time">${moment(data.message.date_time).fromNow()}</div>
             </div></div>`;
@@ -132,6 +137,11 @@
           duration: 1000,
         });
 
+        let tareget = document.getElementById('chat-title');
+        tareget.classList.remove('d-none');
+
+
+
         let response = await fetch(`/inbox/messages/${conversation_id}`);
         const result= await response.json();
 
@@ -148,26 +158,28 @@
               let allMessages = '';
 
               if(data.messages.length > 0) {
-                data.messages.forEach((message) => {
-                  let senderAvatar = message.sender.avatar ? `./uploads/avatars/${message.sender.avatar}` : './images/nophoto.png';
+                data.messages.forEach((message,index) => {
+                  let senderAvatar = message.sender.avatar ? `./${message.sender.avatar}` : `https://placehold.co/200x200?text=${message.sender.name}`;
                   const messageClass = message.sender.id === loggedinUserId ? 'you-message' : 'other-message';
-                  const showAvatar = message.sender.id === loggedinUserId ? '' : `<img src="${senderAvatar}" alt="${message.sender.name}" />`;
+                  const showAvatar = message.sender.id === loggedinUserId ? '' : ` <img  class="message-avatar" src="${senderAvatar}" alt="${message.sender.name}" />`;
 
                   // message attachments
                   let attachments = '<div class="attachments">';
 
-                  if(message.attachment && message.attachment.length > 0) {
+                  if(message?.attachment && message.attachment?.length > 0) {
                     message.attachment.forEach(attachment => {
-                      attachments += `<img src="./uploads/attachments/${attachment}" /> `;
+                     attachments += `<a href="./${attachment}" data-lightbox="message-${message.id}" data-title="Attachment ${index + 1}">
+                                <img src="./${attachment}" alt="Attachment ${index + 1}" />
+                            </a>`;
                     });
                   }
 
                   attachments += '</div>';
-
+                      const messageText = message.text ? `<div class="message-text">${message.text}</div>` : "";
                   // final message html
                   let messageHTML = `<div class="message-row ${messageClass}"><div class="message-content">
                       ${showAvatar}
-                      <div class="message-text">${message.text}</div>
+                      ${messageText}
                       ${attachments}
                       <div class="message-time">${moment(message.date_time).fromNow()}</div>
                     </div></div>`;
@@ -218,6 +230,16 @@
         }
       }
       
+
+
+      function deleteConversation() {
+        let conf = confirm("Are you sure you want to delete this conversation?");
+        if (!conf) return;
+        fetch(`/inbox/delete/${current_conversation_id}`, {
+          method: "DELETE",
+        });
+        window.location.reload();
+      }
     </script>
   </body>
 </html>

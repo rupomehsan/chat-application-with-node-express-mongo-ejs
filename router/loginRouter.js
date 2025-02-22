@@ -35,12 +35,12 @@ router.get(
 router.post("/signin", doLoginValidators, doLoginValidationHandler, login);
 router.post(
   "/signup",
-  doRegisterValidators,
-  doRegisterValidationHandler,
+  // doRegisterValidators,
+  // doRegisterValidationHandler,
   register
 );
 
 // logout
-router.delete("/", logout);
+router.delete("/logout", logout);
 
 module.exports = router;

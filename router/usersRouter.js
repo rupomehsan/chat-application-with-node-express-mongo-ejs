@@ -9,7 +9,7 @@ const {
   removeUser,
 } = require("../controller/usersController");
 const decorateHtmlResponse = require("../middlewares/common/decorateHtmlResponse");
-const avatarUpload = require("../middlewares/users/avatarUpload");
+// const avatarUpload = require("../middlewares/users/avatarUpload");
 const {
   addUserValidators,
   addUserValidationHandler,
@@ -33,7 +33,6 @@ router.post(
   "/",
   checkLogin,
   requireRole(["admin"]),
-  avatarUpload,
   addUserValidators,
   addUserValidationHandler,
   addUser

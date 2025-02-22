@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Social Media Homepage</title>
+    <title>
+      SocialVerse Homepage – A universe for socializing and communication.
+    </title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -13,20 +15,36 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
     <link rel="stylesheet" href="./frontend/css/styles.css" />
+    <link rel="stylesheet" href="./stylesheets/toastify.css" />
+    <script src="./js/toastify.js"></script>
   </head>
   <body>
     <header>
-      <div class="logo">
-        <h1>SocialMedia</h1>
+      <div class="logo d-flex gap-2">
+        <img
+          height="50"
+          width="50"
+          src="https://placehold.co/200x200/orange/white?text=Logo"
+          alt=""
+        />
+        <h1>SocialVerse</h1>
       </div>
-      <nav>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-          <li><a href="#">Messages</a></li>
-          <li><a href="#">Notifications</a></li>
-        </ul>
-      </nav>
+      <div>
+        <h4 class="text-warning d-none">
+          A universe for socializing and communication.
+        </h4>
+        <nav>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Posts</a></li>
+            <% if (user && user.role === "admin") { %>
+            <li><a href="#">Users</a></li>
+            <% } %>
+            <li><a href="#">Notifications</a></li>
+            <li><a href="#">Profile</a></li>
+          </ul>
+        </nav>
+      </div>
       <div>
         <div
           class="chat-icon"
@@ -40,129 +58,223 @@
 
     <main>
       <section class="sidebar">
-        <div class="user-profile">
-          <img src="profile-pic.jpg" alt="Profile Picture" />
-          <h2>John Doe</h2>
-          <p>@johndoe</p>
-        </div>
-        <ul class="sidebar-menu">
-          <li><a href="#">Friends</a></li>
-          <li><a href="#">Groups</a></li>
-          <li><a href="#">Events</a></li>
-          <li><a href="#">Settings</a></li>
-        </ul>
-      </section>
+        <div class="user-profile" style="text-align: justify">
+          <div style="position: relative">
+            <% if (user) { %>
+            <img
+              src="<%= user.avatar %>"
+              alt="Profile Picture"
+              class="mb-2 border p-1"
+            />
+            <h5 class="text-capitalize">Name : <%= user.name %></h5>
+            <p>Email : <%= user.email %></p>
 
-      <section class="feed border" style="height: 100vh; overflow-y: auto">
-        <div class="post">
-          <div class="post-header">
-            <img src="user1.jpg" alt="User 1" />
-            <h3>User One</h3>
+            <% } %>
+            <button
+              style="position: absolute; top: 0; right: 0"
+              onclick="logout()"
+              class="btn btn-danger btn-sm"
+            >
+              <i class="fa-solid fa-right-from-bracket" title="Logout"></i>
+            </button>
           </div>
-          <p>
-            This is a sample post. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
-        </div>
 
-        <div class="post">
-          <div class="post-header">
-            <img src="user2.jpg" alt="User 2" />
-            <h3>User Two</h3>
+          <div>
+            <p class="bg-secondary text-white text-justify">About Me</p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum
+              possimus qui corrupti dolorem dolorum ut? Aperiam itaque,
+              consequatur facere vitae, tempora velit explicabo recusandae,
+              dolores minus nisi aut neque fuga.
+            </p>
           </div>
-          <p>
-            Another sample post. Sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
+          <div>
+            <p class="bg-secondary text-white">About Profile</p>
+            <ul class="sidebar-menu">
+              <li><a href="#">Friends</a> : <span>10</span></li>
+              <li><a href="#">Groups</a> : <span>5</span></li>
+              <li><a href="#">Events</a> : <span>3</span></li>
+            </ul>
           </div>
-        </div>
-        <div class="post">
-          <div class="post-header">
-            <img src="user1.jpg" alt="User 1" />
-            <h3>User One</h3>
-          </div>
-          <p>
-            This is a sample post. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
-        </div>
-
-        <div class="post">
-          <div class="post-header">
-            <img src="user2.jpg" alt="User 2" />
-            <h3>User Two</h3>
-          </div>
-          <p>
-            Another sample post. Sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
-        </div>
-        <div class="post">
-          <div class="post-header">
-            <img src="user1.jpg" alt="User 1" />
-            <h3>User One</h3>
-          </div>
-          <p>
-            This is a sample post. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
-        </div>
-
-        <div class="post">
-          <div class="post-header">
-            <img src="user2.jpg" alt="User 2" />
-            <h3>User Two</h3>
-          </div>
-          <p>
-            Another sample post. Sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
+          <div></div>
         </div>
       </section>
 
-      <section class="right-sidebar">
-        <div class="news">
-          <h2>News</h2>
-          <p>Check out the latest updates from your friends and groups.</p>
+      <section class="feed" style="height: 100vh; overflow-y: auto">
+        <div class="post-box">
+          <div class="input-area">
+            <div class="profile-pic">
+              <img
+                src="https://placehold.co/200x200/gray/white?text=name"
+                alt=""
+              />
+            </div>
+            <input type="text" class="input-field" placeholder="Start a post" />
+          </div>
+          <div class="actions">
+            <div class="action">
+              <img
+                src="https://placehold.co/200x200/gray/white?text=name"
+                alt="Video"
+              />
+              <span class="text-white">Video</span>
+            </div>
+            <div class="action">
+              <img
+                src="https://placehold.co/200x200/gray/white?text=name"
+                alt="Photo"
+              />
+              <span class="text-white">Photo</span>
+            </div>
+            <div class="action">
+              <img
+                src="https://placehold.co/200x200/gray/white?text=name"
+                alt="Write Article"
+              />
+              <span class="text-white">Write article</span>
+            </div>
+            <div class="action">
+              <button class="btn btn-info btn-sm rounded-pill px-3">
+                Post
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="ads">
-          <h2>Sponsored</h2>
-          <p>This is a sample ad.</p>
+
+        <div class="post">
+          <div class="post-header">
+            <img
+              src="https://placehold.co/200x200/gray/white?text=name"
+              alt="User 2"
+            />
+            <h3>User Two</h3>
+          </div>
+          <p>
+            Another sample post. Sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
+          </p>
+          <div class="post-actions">
+            <button>Like</button>
+            <button>Comment</button>
+            <button>Share</button>
+          </div>
         </div>
+        <div class="post">
+          <div class="post-header">
+            <img
+              src="https://placehold.co/200x200/gray/white?text=name"
+              alt="User 1"
+            />
+            <h3>User One</h3>
+          </div>
+          <p>
+            This is a sample post. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit.
+          </p>
+          <div class="post-actions">
+            <button>Like</button>
+            <button>Comment</button>
+            <button>Share</button>
+          </div>
+        </div>
+
+        <div class="post">
+          <div class="post-header">
+            <img
+              src="https://placehold.co/200x200/gray/white?text=name"
+              alt="User 2"
+            />
+            <h3>User Two</h3>
+          </div>
+          <p>
+            Another sample post. Sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
+          </p>
+          <div class="post-actions">
+            <button>Like</button>
+            <button>Comment</button>
+            <button>Share</button>
+          </div>
+        </div>
+        <div class="post">
+          <div class="post-header">
+            <img
+              src="https://placehold.co/200x200/gray/white?text=name"
+              alt="User 1"
+            />
+            <h3>User One</h3>
+          </div>
+          <p>
+            This is a sample post. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit.
+          </p>
+          <div class="post-actions">
+            <button>Like</button>
+            <button>Comment</button>
+            <button>Share</button>
+          </div>
+        </div>
+
+        <div class="post">
+          <div class="post-header">
+            <img
+              src="https://placehold.co/200x200/gray/white?text=name"
+              alt="User 2"
+            />
+            <h3>User Two</h3>
+          </div>
+          <p>
+            Another sample post. Sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
+          </p>
+          <div class="post-actions">
+            <button>Like</button>
+            <button>Comment</button>
+            <button>Share</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="right-sidebar p-1">
+        <div>
+          <input
+            type="text"
+            class="form-control mb-2"
+            placeholder="Search friends"
+          />
+        </div>
+        <% users.forEach(function(user) { %>
+        <div class="post my-2">
+          <div class="post-header">
+            <img
+              src="https://placehold.co/50x50/gray/white?text=<%= user.name.charAt(0).toUpperCase() %>"
+              alt="<%= user.name %>"
+            />
+            <p class="m-0"><%= user.name %></p>
+          </div>
+        </div>
+        <% }); %>
       </section>
     </main>
 
-    <footer>
-      <p>&copy; 2023 SocialMedia. All rights reserved.</p>
-    </footer>
+    <script>
+      // toast
+      const logoutToast = Toastify({
+        text: "You are being logged out...",
+        duration: 1000,
+      });
+
+      function logout() {
+        let conf = confirm("Are you sure you want to logout?");
+        if (!conf) return;
+        fetch("/logout", {
+          method: "DELETE",
+        });
+        logoutToast.showToast();
+        setTimeout(() => {
+          window.location.replace("/");
+        }, 1000);
+      }
+    </script>
   </body>
 </html>

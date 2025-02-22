@@ -458,13 +458,26 @@ input[type="submit"]:active {
   /* grid-template-columns: 70%; */
   margin-bottom: 20px;
 }
-
+.d-none {
+  display: none !important;
+}
 .message-content {
   display: grid;
 }
-
+.message-avatar {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 100%;
+  border: 2px solid var(--blue);
+  margin: 5px 0;
+  object-fit: contain !important;
+}
 .message-content img {
-  width: 32px;
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  object-position: top center;
+  cursor: pointer;
 }
 
 .you-message {
@@ -482,12 +495,11 @@ input[type="submit"]:active {
 }
 
 .other-message .message-content {
-  grid-template-columns: 48px 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-column-gap: 15px;
 }
 
 .message-row img:first-of-type {
-  border-radius: 100%;
   grid-row: span 2;
 }
 

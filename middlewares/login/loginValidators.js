@@ -29,6 +29,8 @@ const doRegisterValidators = [
 ];
 
 const doLoginValidationHandler = function (req, res, next) {
+  // console.log("val", req);
+
   const errors = validationResult(req);
   const mappedErrors = errors.mapped();
   if (Object.keys(mappedErrors).length === 0) {

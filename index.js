@@ -6,14 +6,17 @@ const mongoose = require("mongoose");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const moment = require("moment");
-const multer = require("multer");
-const upload = multer();
+const cors = require("cors");
+const formData = require("express-form-data");
+
+// const multer = require("multer");
+// const upload = multer();
 // internal imports
 const loginRouter = require("./router/loginRouter");
 const homeRouter = require("./router/homeRouter");
 const usersRouter = require("./router/usersRouter");
 const inboxRouter = require("./router/inboxRouter");
-
+const bodyParser = require("body-parser");
 // internal imports
 const {
   notFoundHandler,
@@ -41,10 +44,13 @@ mongoose
   .catch((err) => console.log(err));
 
 // request parsers
+app.use(cors());
 app.use(express.json());
 // app.use(upload.any());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(bodyParser.json());
+app.use(formData.parse());
+app.use("/", express.static("public"));
 // set view engine
 app.set("view engine", "ejs");
 
