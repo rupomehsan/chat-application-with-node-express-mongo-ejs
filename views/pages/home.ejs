@@ -36,7 +36,6 @@
         <nav>
           <ul>
             <li><a href="#">Home</a></li>
-            <li><a href="#">Posts</a></li>
             <% if (user && user.role === "admin") { %>
             <li><a href="#">Users</a></li>
             <% } %>
@@ -102,137 +101,63 @@
 
       <section class="feed" style="height: 100vh; overflow-y: auto">
         <div class="post-box">
-          <div class="input-area">
-            <div class="profile-pic">
-              <img
-                src="https://placehold.co/200x200/gray/white?text=name"
-                alt=""
-              />
+          <form method="post" enctype="multipart/form-data" id="postForm">
+            <div class="input-area">
+              <div class="profile-pic">
+                <img
+                  src="https://placehold.co/200x200/gray/white?text=name"
+                  alt=""
+                />
+              </div>
+              <textarea
+                style="width: 100%; border-radius: 5px"
+                name="description"
+                id=""
+                cols="10"
+                rows="3"
+              ></textarea>
             </div>
-            <input type="text" class="input-field" placeholder="Start a post" />
-          </div>
-          <div class="actions">
-            <div class="action">
-              <img
-                src="https://placehold.co/200x200/gray/white?text=name"
-                alt="Video"
-              />
-              <span class="text-white">Video</span>
+            <div class="actions">
+              <div class="action">
+                <input
+                  id="imageUpload"
+                  type="file"
+                  name="images"
+                  accept="image/*"
+                  multiple
+                  hidden
+                />
+
+                <!-- Clickable label to trigger file input -->
+                <label
+                  for="imageUpload"
+                  class="text-white"
+                  style="cursor: pointer"
+                >
+                  <img
+                    id="preview"
+                    src="https://placehold.co/100x100/gray/white?text=Upload"
+                    alt="Upload Photo"
+                    style="width: 30px; height: 30px"
+                  />
+                  Photo
+                </label>
+              </div>
+
+              <div class="action">
+                <button
+                  class="btn btn-info btn-sm rounded-pill px-3"
+                  style="width: 100px; padding: 10px; font-weight: 900"
+                  type="submit"
+                >
+                  Post
+                </button>
+              </div>
             </div>
-            <div class="action">
-              <img
-                src="https://placehold.co/200x200/gray/white?text=name"
-                alt="Photo"
-              />
-              <span class="text-white">Photo</span>
-            </div>
-            <div class="action">
-              <img
-                src="https://placehold.co/200x200/gray/white?text=name"
-                alt="Write Article"
-              />
-              <span class="text-white">Write article</span>
-            </div>
-            <div class="action">
-              <button class="btn btn-info btn-sm rounded-pill px-3">
-                Post
-              </button>
-            </div>
-          </div>
+          </form>
         </div>
 
-        <div class="post">
-          <div class="post-header">
-            <img
-              src="https://placehold.co/200x200/gray/white?text=name"
-              alt="User 2"
-            />
-            <h3>User Two</h3>
-          </div>
-          <p>
-            Another sample post. Sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
-        </div>
-        <div class="post">
-          <div class="post-header">
-            <img
-              src="https://placehold.co/200x200/gray/white?text=name"
-              alt="User 1"
-            />
-            <h3>User One</h3>
-          </div>
-          <p>
-            This is a sample post. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
-        </div>
-
-        <div class="post">
-          <div class="post-header">
-            <img
-              src="https://placehold.co/200x200/gray/white?text=name"
-              alt="User 2"
-            />
-            <h3>User Two</h3>
-          </div>
-          <p>
-            Another sample post. Sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
-        </div>
-        <div class="post">
-          <div class="post-header">
-            <img
-              src="https://placehold.co/200x200/gray/white?text=name"
-              alt="User 1"
-            />
-            <h3>User One</h3>
-          </div>
-          <p>
-            This is a sample post. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
-        </div>
-
-        <div class="post">
-          <div class="post-header">
-            <img
-              src="https://placehold.co/200x200/gray/white?text=name"
-              alt="User 2"
-            />
-            <h3>User Two</h3>
-          </div>
-          <p>
-            Another sample post. Sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </p>
-          <div class="post-actions">
-            <button>Like</button>
-            <button>Comment</button>
-            <button>Share</button>
-          </div>
-        </div>
+        <div id="post-data"></div>
       </section>
 
       <section class="right-sidebar p-1">
@@ -258,11 +183,18 @@
     </main>
 
     <script>
+      (function () {
+        getAllPosts();
+      })();
+
+      let form = document.getElementById("postForm");
+      let postData = [];
       // toast
-      const logoutToast = Toastify({
-        text: "You are being logged out...",
-        duration: 1000,
-      });
+      const message = (title) =>
+        Toastify({
+          text: title,
+          duration: 1000,
+        }).showToast();
 
       function logout() {
         let conf = confirm("Are you sure you want to logout?");
@@ -270,10 +202,78 @@
         fetch("/logout", {
           method: "DELETE",
         });
-        logoutToast.showToast();
+        message("You are being logged out...");
         setTimeout(() => {
           window.location.replace("/");
         }, 1000);
+      }
+
+      form.onsubmit = async function (event) {
+        event.preventDefault();
+        // messages failure toast
+        const sendMessageFailureToast = (message) =>
+          Toastify({
+            text: message,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "red",
+          }).showToast();
+        // prepare the form data
+        const formData = new FormData(form);
+        // send the request to server
+        let response = await fetch("/post", {
+          method: "POST",
+          body: formData,
+        });
+        // get response
+        let result = await response.json();
+        if (!result.errors) {
+          form.reset(); // reset the form
+          message("Post created successfully!");
+        } else {
+          sendMessageFailureToast("Message show not be empty!");
+        }
+      };
+
+      async function getAllPosts() {
+        let response = await fetch("/post", {
+          method: "GET",
+        });
+        let result = await response.json();
+
+        postData = result.data.posts;
+
+        let postDiv = document.getElementById("post-data");
+        let postHTML = "";
+
+        if (postData.length > 0) {
+          postHTML = postData
+            .map((post) => {
+              const avatar = post.user?.avatar
+                ? `${post.user.avatar}`
+                : `https://placehold.co/200x200/gray/white?text=${post.user?.name
+                    ?.charAt(0)
+                    .toUpperCase()}`;
+
+              return `
+            <div class="post">
+                <div class="post-header">
+                    <img src="${avatar}" alt="${post.user?.name}" />
+                    <h3>${post.user?.name || "Anonymous"}</h3>
+                </div>
+                <p>${post.description || ""}</p>
+                <div class="post-actions">
+                    <button>Like</button>
+                    <button>Comment</button>
+                </div>
+            </div>
+        `;
+            })
+            .join(""); // Use `.join('')` to avoid unnecessary array commas in output
+          postDiv.innerHTML = postHTML;
+        }
       }
     </script>
   </body>

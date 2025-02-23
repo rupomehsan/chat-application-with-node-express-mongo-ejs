@@ -210,8 +210,9 @@ footer {
 }
 .actions {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   padding-top: 10px;
+  margin-left: 60px;
 }
 .action {
   display: flex;

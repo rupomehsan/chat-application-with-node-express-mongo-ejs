@@ -1,7 +1,7 @@
 <%- include('../partials/header.ejs'); %>
     <div id="chat-container">
       <div id="search-container">
-        <input type="text" placeholder="Search" />
+        <input type="text"  placeholder="Search" />
        
          </div>
       <div id="conversation-list">
@@ -197,36 +197,31 @@
           messagesFailureToast.showToast();
         }
     }
-
       // message sending
       form.onsubmit = async function (event) {
         event.preventDefault();
-
-        const sendMessageFailureToast = Toastify({
-          text: "Error sending message",
+        // messages failure toast
+        const sendMessageFailureToast = (message) => Toastify({
+          text: message,
           duration: 1000,
-        });
-
+        }).showToast();
         // prepare the form data
         const formData = new FormData(form);
         formData.append('receiverId', participant.id);
         formData.append('receiverName', participant.name);
         formData.append('avatar', participant.avatar || '');
         formData.append('conversationId', current_conversation_id);
-
         // send the request to server
         let response = await fetch("/inbox/message", {
           method: "POST",
           body: formData,
         });
-
         // get response
         let result = await response.json();
-
         if (!result.errors) {
           form.reset(); // reset the form
         } else {
-          sendMessageFailureToast.showToast();
+          sendMessageFailureToast(result.errors.common.msg);
         }
       }
       

@@ -10,7 +10,7 @@ const User = require("../models/People");
 async function getHomePage(req, res, next) {
   try {
     const userList = await User.find({ _id: { $ne: req.user.userid } });
-    res.render("home", { user: req.user, users: userList });
+    res.render("pages/home", { user: req.user, users: userList });
   } catch (error) {
     console.error("Error fetching users:", error);
     res.status(500).send("Server error");

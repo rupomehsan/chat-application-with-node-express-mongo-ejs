@@ -8,16 +8,15 @@ const cookieParser = require("cookie-parser");
 const moment = require("moment");
 const cors = require("cors");
 const formData = require("express-form-data");
-
-// const multer = require("multer");
-// const upload = multer();
-// internal imports
+// internal route imports
 const loginRouter = require("./router/loginRouter");
 const homeRouter = require("./router/homeRouter");
 const usersRouter = require("./router/usersRouter");
 const inboxRouter = require("./router/inboxRouter");
+const postRouter = require("./router/postRouter");
+
+// internal route imports
 const bodyParser = require("body-parser");
-// internal imports
 const {
   notFoundHandler,
   errorHandler,
@@ -65,6 +64,7 @@ app.use(loginRouter);
 app.use("/", homeRouter);
 app.use("/users", usersRouter);
 app.use("/inbox", inboxRouter);
+app.use("/post", postRouter);
 
 // 404 not found handler
 app.use(notFoundHandler);

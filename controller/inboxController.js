@@ -148,6 +148,10 @@ async function getMessages(req, res, next) {
 async function sendMessage(req, res, next) {
   try {
     if (req.body.message || req.files || req.files?.attachment?.length > 0) {
+      if (!req.body.message) {
+        throw createError("Message is required!");
+      }
+
       try {
         // save message text/attachment in database
         let attachments = null;
